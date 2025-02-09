@@ -14,7 +14,7 @@ class ApigeeClient:
         self.organization = organization
         self.url = f"https://apigee.googleapis.com/v1/organizations/{organization}"
         self.credentials = service_account.Credentials.from_service_account_file(credentials_path, scopes=['https://www.googleapis.com/auth/cloud-platform'])
-        #create an auth request object as a class member 
+        #create authentication request object for when the token expires and needs to be renewed
         self.auth_request = auth_transport.Request()
 
 
@@ -29,7 +29,19 @@ class ApigeeClient:
             'Authorization': f'Bearer {self.credentials.token}',
             'Content-Type': 'application/json'
         }
+      
         
+    def get_app_details(self, app_id: str) -> Dict:
+        '''
+        Because GET url/apps only returnS app id this method will return the rest of the app details
+        '''
+        url = f"{self.url}/apps/{app_id}"
+        response = requests.get(url, headers=self._get_headers())
+        #check if request was succesful
+        response.raise_for_status()
+        return response.json()
+
+
     def list_apps(self) -> List[Dict]:
         '''
         List all the apps in the given org
@@ -38,10 +50,26 @@ class ApigeeClient:
         '''
         url = f"{self.url}/apps"
         response = requests.get(url, headers=self._get_headers())
-        #check if request was succesful
         response.raise_for_status()
-        return response.json().get('app', [])
+        apps = response.json().get('app', [])
+        formatted_apps = []
+        for app in apps:
+            app_id = app.get('appId')
+            try:
+                app_details = self.get_app_details(app_id)
+        
+                formatted_app = {
+                    "appId": app_id,
+                    "name": app_details.get('name'),
+                    "developerId": app_details.get('developerId')
+                }
+                formatted_apps.append(formatted_app)
+            except Exception as e:
+                print(f"Error getting details for app {app_id}: {e}")
+            
+        return {"apps": formatted_apps}
     
+
     def list_developer_apps(self, dev_mail: str) -> List[Dict]:
         '''
         List all apps belonging to a specific developer
@@ -56,6 +84,7 @@ class ApigeeClient:
         response.raise_for_status()
         return response.json().get('app', [])
     
+
     def create_app(self, dev_mail: str, app_name: str, callback_url: Optional[str] = None , description: Optional[str] = None) -> Dict:
         '''
         Create a new app for a developer
@@ -112,11 +141,14 @@ def main():
             app = client.create_app(args.dev_mail, args.app_name, args.callback_url, args.description)
             print(json.dumps(app, indent=2)) 
 
+    #handle API request errors
     except requests.exceptions.RequestException as e:
         print(f"API Error: {e}")
+        #check if the error has a response object
         if hasattr(e, 'response'):
             print(f"Response: {e.response.text}")
         exit(1)
+    #handle other errors
     except Exception as e:
         print(f"Error: {e}")
         exit(1)

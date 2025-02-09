@@ -6,6 +6,9 @@
     - Create new app with specific parameters
     - Docker config for easy deployment
 
+- The Dockerfile uses the init.sh script as a rapper that performs checks before running the python script. It verifies that the credentials json file is mounted and accesible.
+- The python script accepts command line arguments in order to determine what action the user wants to make. 
+
 ## Command line arguments
  Argument | Required | Description 
  --- |:---:| ---  
@@ -75,4 +78,12 @@ docker run -v /path/to/credentials.json:/credentials.json \
     --action create \
     --dev-mail dev@gmail.com \
     --app-name exampleApp1 \
+```
+
+- use python directly:
+
+```bash
+python apigee-apps.py --organization ORG_ID \
+    --credentials /path/to/credentials.json \
+    --action list-all
 ```
