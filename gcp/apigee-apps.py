@@ -13,7 +13,7 @@ class ApigeeClient:
         '''
         self.organization = organization
         self.url = f"https://apigee.googleapis.com/v1/organizations/{organization}"
-        self.credentials = service_account.Credentials.from_service_account_file(credentials_path, scopes=['https://www.googleapis.com/auth/cloud-platform'])
+        self.credentials = service_account.Credentials.from_service_account_file(f"/{credentials_path}", scopes=['https://www.googleapis.com/auth/cloud-platform'])
         #create authentication request object for when the token expires and needs to be renewed
         self.auth_request = auth_transport.Request()
 
@@ -42,7 +42,7 @@ class ApigeeClient:
         return response.json()
 
 
-    def list_apps(self) -> List[Dict]:
+    def list_apps(self) -> Dict:
         '''
         List all the apps in the given org
 
@@ -70,7 +70,7 @@ class ApigeeClient:
         return {"apps": formatted_apps}
     
 
-    def list_developer_apps(self, dev_mail: str) -> List[Dict]:
+    def list_developer_apps(self, dev_mail: str) -> Dict:
         '''
         List all apps belonging to a specific developer
 
