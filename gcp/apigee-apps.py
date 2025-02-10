@@ -54,6 +54,7 @@ class ApigeeClient:
         apps = response.json().get('app', [])
         formatted_apps = []
         for app in apps:
+            #iterate through appIDs 
             app_id = app.get('appId')
             try:
                 app_details = self.get_app_details(app_id)
