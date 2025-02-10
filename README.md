@@ -20,6 +20,21 @@
  --callback-url | no | Callback url for new app
  --description | no | Description for new app
 
+## Actions
+
+- list all apps: [--action list-all]
+- list developer apps: [--action list-developer]
+- create new app: [--action create]
+
+
+- use python directly:
+
+```bash
+python apigee-apps.py --organization ORG_ID \
+    --credentials /path/to/credentials.json \
+    --action list-all
+```
+
 
 ## Using Docker
 
@@ -38,11 +53,6 @@ docker build -t apigee-gcp .
 
 - mount credentials file to make it accesible by the container: `/path/to/credentials.json:/credentials.json`
 
-## Actions
-
-- list all apps: [--action list-all]
-- list developer apps: [--action list-developer]
-- create new app: [--action create]
 
 1. List all apps:
 ```bash
@@ -80,10 +90,3 @@ docker run -v /path/to/credentials.json:/credentials.json \
     --app-name exampleApp1 \
 ```
 
-- use python directly:
-
-```bash
-python apigee-apps.py --organization ORG_ID \
-    --credentials /path/to/credentials.json \
-    --action list-all
-```
