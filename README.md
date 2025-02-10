@@ -6,7 +6,7 @@
     - Create new app with specific parameters
     - Docker config for easy deployment
 
-- The Dockerfile uses the init.sh script as a rapper that performs checks before running the python script. It verifies that the credentials json file is mounted and accesible.
+- The Dockerfile uses the init.sh script as a wrapper that performs checks before running the python script. It verifies that the credentials json file is mounted and accesible.
 - The python script accepts command line arguments in order to determine what action the user wants to make. 
 
 ## Prerequisites 
