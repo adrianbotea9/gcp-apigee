@@ -9,6 +9,9 @@
 - The Dockerfile uses the init.sh script as a rapper that performs checks before running the python script. It verifies that the credentials json file is mounted and accesible.
 - The python script accepts command line arguments in order to determine what action the user wants to make. 
 
+## Prerequisites 
+    - service account with appropiate Apigee permisions
+
 ## Command line arguments
  Argument | Required | Description 
  --- |:---:| ---  
